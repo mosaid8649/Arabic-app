@@ -1,44 +1,68 @@
-#!/bin/bash
-# Arabic Learning Studio - Start Script
+name: Deploy to Amazon ECS
 
-echo ""
-echo "🌙 Arabic Learning Studio"
-echo "========================="
-echo ""
+on:
+  push:
+    branches: [ "main" ]
 
-# Check Node.js
-if ! command -v node &> /dev/null; then
-    echo "❌ Node.js not found. Please install Node.js 18+ from https://nodejs.org"
-    exit 1
-fi
+env:
+  AWS_REGION: eu-west-2              # set this to your preferred AWS region, e.g. us-west-1
+  ECR_REPOSITORY: mohamed/arabic-app         # set this to your Amazon ECR repository name
+  ECS_SERVICE:    arabic-app-service         # set this to your Amazon ECS service name
+  ECS_CLUSTER:   ecs-arabic-app            # set this to your Amazon ECS cluster name              # set this to your Amazon ECS cluster name
+  ECS_TASK_DEFINITION:  .aws/task-definition.json
+                                               # file, e.g. .aws/task-definition.json
+  CONTAINER_NAME: arabic-app     # set this to the name of the container in the
+                                               # containerDefinitions section of your task definition
 
-NODE_VERSION=$(node -e "console.log(parseInt(process.version.slice(1)))")
-if [ "$NODE_VERSION" -lt 16 ]; then
-    echo "❌ Node.js 16+ required. Current: $(node --version)"
-    exit 1
-fi
+permissions:
+  contents: read
 
-# Install backend deps if needed
-if [ ! -d "backend/node_modules" ]; then
-    echo "📦 Installing backend dependencies..."
-    cd backend && npm install && cd ..
-fi
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: production
 
-# Install frontend deps if needed  
-if [ ! -d "frontend/node_modules" ]; then
-    echo "📦 Installing frontend dependencies..."
-    cd frontend && npm install && cd ..
-fi
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
 
-# Build frontend if not built
-if [ ! -d "frontend/dist" ]; then
-    echo "🔨 Building frontend..."
-    cd frontend && npm run build && cd ..
-fi
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
 
-echo "🚀 Starting backend server on http://localhost:5000"
-echo "🌐 Open http://localhost:5000 in your browser"
-echo "   (Press Ctrl+C to stop)"
-echo ""
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
 
-cd backend && node src/server.js
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        # Build a docker container and
+        # push it to ECR so that it can
+        # be deployed to ECS.
+        docker buildx build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ env.ECS_TASK_DEFINITION }}
+        container-name: ${{ env.CONTAINER_NAME }}
+        image: ${{ steps.build-image.outputs.image }}
+
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: ${{ env.ECS_SERVICE }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        wait-for-service-stability: true
