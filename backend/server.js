@@ -6,7 +6,7 @@ const cors = require('cors');
 const { initDb } = require('./src/models/db');
 const { errorHandler, notFound } = require('./src/middleware');
 
-const uploadRoutes = require('./src/routes/upload');
+const uploadRoutes = require('./src/routes/upload');  #testing ci/cd
 const wordRoutes = require('./src/routes/words');
 const lessonRoutes = require('./src/routes/lessons');
 const practiceRoutes = require('./src/routes/practice');
