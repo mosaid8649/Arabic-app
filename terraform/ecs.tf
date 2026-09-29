@@ -17,7 +17,7 @@ resource "aws_ecs_task_definition" "arabic_app_task" {
     container_definitions = jsonencode([
         {
             name  = "arabic-app"
-            image = "357980556753.dkr.ecr.eu-west-2.amazonaws.com/mohamed/arabic-app:latest"
+            image = "934685482048.dkr.ecr.eu-west-2.amazonaws.com/mohamed/arabic-app:latest"
             portMappings = [
                 {
                     containerPort = 5000
@@ -32,7 +32,7 @@ resource "aws_ecs_service" "ecs_servi" {
     name            = "arabic-app-service"
     cluster         = aws_ecs_cluster.ecs-cluster-app.id
     task_definition = aws_ecs_task_definition.arabic_app_task.arn
-    desired_count   = 1
+    desired_count   = 0
     launch_type     = "FARGATE"
 
     network_configuration {

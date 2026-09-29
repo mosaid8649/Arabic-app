@@ -6,3 +6,9 @@ dist/
 terraform/.terraform/
 terraform/terraform.tfstate
 terraform/terraform.tfstate.backup
+
+*.tfstate
+*.tfstate.*
+.terraform/
+*.tfvars
+crash.log

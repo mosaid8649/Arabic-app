@@ -56,7 +56,7 @@ resource "aws_security_group" "RDS_rules" {
         from_port = "5432"
         to_port = "5432"
         protocol = "tcp"
-        security_groups = [aws_security_group.ecs_rules.id]
+        security_groups = [aws_eks_cluster.eks_cluster.vpc_config[0].cluster_security_group_id]
     }
     egress {
         from_port = "0"
@@ -67,5 +67,5 @@ resource "aws_security_group" "RDS_rules" {
     }
     tags = {
         Name = "RDS rules"
+    } 
     }
-}

@@ -1,5 +1,5 @@
 resource "aws_route53_record" "arabicapp" {
-    zone_id = data.aws_route53_zone.arabicapp.zone_id
+    zone_id = aws_route53_zone.arabicapp.zone_id
 
 name = "arabicapp.xyz"
 type = "A"
@@ -9,8 +9,8 @@ alias {
     evaluate_target_health = true
 }
 }
-data "aws_route53_zone" "arabicapp" {
-    name = "arabicapp.xyz"
+resource "aws_route53_zone" "arabicapp" {
+  name = "arabicapp.xyz"
 }
 
 resource "aws_acm_certificate" "acm_cert" {
@@ -30,7 +30,7 @@ resource "aws_route53_record" "acm_validation" {
     }
   }
 
-  zone_id = data.aws_route53_zone.arabicapp.zone_id
+  zone_id = aws_route53_zone.arabicapp.zone_id
   name    = each.value.name
   type    = each.value.type
   records = [each.value.record]

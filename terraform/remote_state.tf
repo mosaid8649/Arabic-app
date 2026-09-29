@@ -1,5 +1,5 @@
-resource "aws_s3_bucket" "arabic-app-state" {
-    bucket = "arabic-app-state"
+resource "aws_s3_bucket" "arabic-app-state-934685482048" {
+    bucket = "arabic-app-state-934685482048"
 }
 resource "aws_dynamodb_table" "dynamo-table" {
     name = "arabic-app-table"

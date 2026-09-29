@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: arabic-app
-          image: 833727176090.dkr.ecr.eu-west-2.amazonaws.com/mohamed/arabic-app:latest
+          image: 223258934743.dkr.ecr.eu-west-2.amazonaws.com/arabic-app:latest
           ports:
             - containerPort: 5000
           env:

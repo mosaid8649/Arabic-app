@@ -5,14 +5,14 @@ on:
     branches: [ "main" ]
 
 env:
-  AWS_REGION: eu-west-2              # set this to your preferred AWS region, e.g. us-west-1
-  ECR_REPOSITORY: mohamed/arabic-app         # set this to your Amazon ECR repository name
-  ECS_SERVICE:    arabic-app-service         # set this to your Amazon ECS service name
-  ECS_CLUSTER:   ecs-arabic-app            # set this to your Amazon ECS cluster name              # set this to your Amazon ECS cluster name
+  AWS_REGION: eu-west-2             
+  ECR_REPOSITORY: mohamed/arabic-app        
+  ECS_SERVICE:    arabic-app-service         
+  ECS_CLUSTER:   ecs-arabic-app          
   ECS_TASK_DEFINITION:  .aws/task-definition.json
-                                               # file, e.g. .aws/task-definition.json
-  CONTAINER_NAME: arabic-app     # set this to the name of the container in the
-                                               # containerDefinitions section of your task definition
+                                               
+  CONTAINER_NAME: arabic-app     
+                                               
 
 permissions:
   contents: read
@@ -44,9 +44,9 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        # Build a docker container and
-        # push it to ECR so that it can
-        # be deployed to ECS.
+        
+        
+        
         docker buildx build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT

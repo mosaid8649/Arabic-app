@@ -1,7 +1,7 @@
 resource "aws_db_instance" "arabicapp_rds" {
     identifier = "arabicapp-db"
     engine = "postgres"
-    engine_version = "13.21"
+    engine_version = "16.13"
     instance_class = "db.t3.micro"
     allocated_storage = 20
     db_name = "arabicapp"
