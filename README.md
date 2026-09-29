@@ -1,4 +1,4 @@
-# Arabic Vocabulary App: Production-Style EKS Deployment on AWS
+# Language learning App: Production-Style EKS Deployment on AWS
 
 This project deploys a containerised Arabic vocabulary learning app (React frontend, Node.js backend, SM-2 spaced repetition) on AWS EKS (Elastic Kubernetes Service). The infrastructure is provisioned with Terraform for consistency and repeatability, the app is exposed securely over HTTPS through an Application Load Balancer, and a GitHub Actions pipeline automates building and containerising the application.
 
