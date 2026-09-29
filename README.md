@@ -62,9 +62,8 @@ The deployment is designed around repeatable infrastructure, secure traffic and 
 
 ## Deployment Evidence
 
-The screenshot shows the running deployment on EKS: two healthy pods, the `arabic-app` Deployment at 2/2 ready, and the ALB-backed Ingress.
+<img width="1710" height="1107" alt="Screenshot 2026-09-24 at 11 41 45" src="https://github.com/user-attachments/assets/ed74723a-00f7-466b-bd1a-10d0b1ef229b" />
 
-![kubectl output showing pods, deployment and ingress](docs/kubectl-output.png)
 
 ## Migrations
 
